@@ -29,6 +29,7 @@ type Tree struct {
 	peekCount int
 	vars      []string // variables defined at the moment.
 	treeSet   map[string]*Tree
+	chkFuncs  bool // if true, will check that refernced functions exist in funcmap
 }
 
 // Copy returns a copy of the Tree. Any parsing state is discarded.
@@ -41,7 +42,14 @@ func (t *Tree) Copy() *Tree {
 		ParseName: t.ParseName,
 		Root:      t.Root.CopyList(),
 		text:      t.text,
+		chkFuncs:  t.chkFuncs,
 	}
+}
+
+// ParseNoFuncs is just like Parse except that it doesn't check if functions
+// referenced in the template exist in a funcmap.
+func ParseNoFuncs(name, text, leftDelim, rightDelim string, funcs ...map[string]interface{}) (map[string]*Tree, error) {
+	return parse(name, text, leftDelim, rightDelim, false, funcs)
 }
 
 // Parse returns a map from template name to parse.Tree, created by parsing the
@@ -49,9 +57,14 @@ func (t *Tree) Copy() *Tree {
 // given the specified name. If an error is encountered, parsing stops and an
 // empty map is returned with the error.
 func Parse(name, text, leftDelim, rightDelim string, funcs ...map[string]interface{}) (map[string]*Tree, error) {
+	return parse(name, text, leftDelim, rightDelim, true, funcs)
+}
+
+func parse(name, text, leftDelim, rightDelim string, chkFuncs bool, funcs []map[string]interface{}) (map[string]*Tree, error) {
 	treeSet := make(map[string]*Tree)
 	t := New(name)
 	t.text = text
+	t.chkFuncs = chkFuncs
 	_, err := t.Parse(text, leftDelim, rightDelim, treeSet, funcs...)
 	return treeSet, err
 }
@@ -664,9 +677,9 @@ func (t *Tree) term() Node {
 	case itemError:
 		t.errorf("%s", token.val)
 	case itemIdentifier:
-		// if !t.hasFunction(token.val) {
-		// 	t.errorf("function %q not defined", token.val)
-		// }
+		if t.chkFuncs && !t.hasFunction(token.val) {
+			t.errorf("function %q not defined", token.val)
+		}
 		return NewIdentifier(token.val).SetTree(t).SetPos(token.pos)
 	case itemDot:
 		return t.newDot(token.pos)
