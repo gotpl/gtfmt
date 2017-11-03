@@ -39,3 +39,16 @@ func TestFormat(t *testing.T) {
 		t.Fatalf("expected:\n%q\n\nbut got:\n%q", expected, out)
 	}
 }
+
+func TestFixFuncWithPath(t *testing.T) {
+	tpl := `Hi!  {{  Foo  .Index.Foo  "Foo"  }}33`
+	out, err := Fix(tpl, "Foo", "Bar")
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := `Hi!  {{Bar .Index.Foo "Foo"}}33`
+	if out != expected {
+		t.Fatalf("expected:\n%q\n\nbut got:\n%q", expected, out)
+	}
+
+}

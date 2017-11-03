@@ -2,6 +2,29 @@
 
 Like go fmt but for go templates.
 
+Note that "reformatting" only changes the code inside template actions, it will
+never change the text outside the template actions.
+
+Reformatting should be considered safe and will not change your template's
+output at all.
+
+Rewriting with -r is still experimental and should be used with extreme caution,
+as it may have unintended consequences.
+
+## Examples
+
+$ echo 'Hi!  {{  foo  .Index.Bar  "byte"  }}33' | gtfmt
+Hi!  {{foo .Index.Bar "byte"}}33
+
+// replace a function name
+$ echo 'Hi!  {{  Foo  .Index.Foo  "Foo"  }}33' | gtfmt -r 'Foo -> Baz'
+Hi!  {{Baz .Index.Foo "Foo"}}33
+
+// replace a field's path
+$ echo 'Hi!  {{  Foo  .Index.Foo  "Foo"  }}33' | gtfmt -r '.Index.Foo -> .Index.Baz.Foo'
+Hi!  {{Baz .Index.Baz.Foo "Foo"}}33
+
+
 ## Usage
 
 ```

@@ -67,18 +67,22 @@ func (s *state) walk(node parse.Node) {
 		return
 	}
 	switch node := node.(type) {
+	case *parse.StringNode, *parse.TextNode, *parse.VariableNode, *parse.BoolNode, *parse.NumberNode:
+		// nothing to do
 	case *parse.ActionNode:
-		for _, n := range node.Pipe.Cmds {
+		s.walk(node.Pipe)
+	case *parse.PipeNode:
+		for _, n := range node.Cmds {
+			s.walk(n)
+		}
+		for _, n := range node.Decl {
 			s.walk(n)
 		}
 	case *parse.IfNode:
 		s.walkBranch(node.BranchNode)
 	case *parse.RangeNode:
-		s.walk(node.Pipe)
 		s.walkBranch(node.BranchNode)
 	case *parse.WithNode:
-		s.walk(node.List)
-		s.walk(node.Pipe)
 		s.walkBranch(node.BranchNode)
 	case *parse.ListNode:
 		for _, n := range node.Nodes {
@@ -86,10 +90,8 @@ func (s *state) walk(node parse.Node) {
 		}
 	case *parse.TemplateNode:
 		s.walk(node.Pipe)
-	case *parse.StringNode, *parse.TextNode:
-		// nothing to do
 	case *parse.IdentifierNode:
-		if node.Ident == s.fn {
+		if s.fn != "" && node.Ident == s.fn {
 			node.Ident = s.repl
 		}
 	case *parse.CommandNode:
@@ -97,6 +99,9 @@ func (s *state) walk(node parse.Node) {
 			s.walk(n)
 		}
 	case *parse.FieldNode:
+		if s.path == "" {
+			return
+		}
 		// append a dot at the end to ensure we get full word matching
 		ident := "." + strings.Join(node.Ident, ".") + "."
 		if !strings.Contains(ident, s.path) {
