@@ -1,5 +1,6 @@
 # gtfmt [![Build Status](https://travis-ci.org/gotpl/gtfmt.svg?branch=master)](https://travis-ci.org/gotpl/gtfmt)
 
+
 Like go fmt but for go templates.
 
 Note that "reformatting" only changes the code inside template actions, it will
@@ -10,6 +11,10 @@ output at all.
 
 Rewriting with -r is still experimental and should be used with extreme caution,
 as it may have unintended consequences.
+
+
+**Note** sub-templates (i.e. {{define "foo"}}) are currently not supported
+(gtfmt will refuse to run on templates that use subtemplates).
 
 ## Examples
 ```
