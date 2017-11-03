@@ -52,3 +52,19 @@ func TestFixFuncWithPath(t *testing.T) {
 	}
 
 }
+
+func TestNoParseSubTemplate(t *testing.T) {
+	tpl := `
+{{define "foo" }}
+{{ bar 1 }}
+{{end}}
+{{ template "foo" . }}
+`
+	_, err := Format("tpl", tpl)
+	if err == nil {
+		t.Fatal("expected subtemplate to trigger error")
+	}
+	if err.Error() != "sub templates not currently supported" {
+		t.Fatalf("wrong error message from subtemplate: %v", err)
+	}
+}

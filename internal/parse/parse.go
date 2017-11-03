@@ -298,6 +298,7 @@ func (t *Tree) parse() {
 				newT := New("definition") // name will be updated once we know it.
 				newT.text = t.text
 				newT.ParseName = t.ParseName
+				newT.skipFuncs = t.skipFuncs
 				newT.startParse(t.funcs, t.lex, t.treeSet)
 				newT.parseDefinition()
 				continue

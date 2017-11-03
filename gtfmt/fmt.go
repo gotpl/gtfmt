@@ -1,6 +1,7 @@
 package gtfmt
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -13,6 +14,9 @@ func Formatted(name, tpl string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	if len(tree) > 1 {
+		return false, errors.New("sub templates not currently supported")
+	}
 	return tpl == tree[name].Root.String(), nil
 }
 
@@ -22,6 +26,9 @@ func Format(name, tpl string) (string, error) {
 	tree, err := parse.ParseNoFuncs(name, tpl, "", "")
 	if err != nil {
 		return "", err
+	}
+	if len(tree) > 1 {
+		return "", errors.New("sub templates not currently supported")
 	}
 	return tree[name].Root.String(), nil
 }
@@ -33,6 +40,9 @@ func Fix(name, tpl, orig, repl string) (string, error) {
 	tree, err := parse.ParseNoFuncs(name, tpl, "", "")
 	if err != nil {
 		return "", err
+	}
+	if len(tree) > 1 {
+		return "", errors.New("sub templates not currently supported")
 	}
 	s := &state{}
 	if strings.HasPrefix(orig, ".") {
