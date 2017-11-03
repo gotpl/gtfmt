@@ -13,8 +13,16 @@ Rewriting with -r is still experimental and should be used with extreme caution,
 as it may have unintended consequences.
 
 
-**Note** sub-templates (i.e. {{define "foo"}}) are currently not supported
+## Bugs 
+
+Whitespace deletion(i.e. {{- "foo" -}}) gets formatted into actually deleting
+the whitespace.  While this technically doesn't change the output of your
+template, it is effectively "destructive" to the template, since you can't just
+remove a dash if you don't like the effect of the whitespace deletion.
+
+sub-templates (i.e. `{{define "foo"}`}) are currently not supported
 (gtfmt will refuse to run on templates that use subtemplates).
+
 
 ## Examples
 ```
