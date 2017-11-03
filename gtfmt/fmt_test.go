@@ -6,7 +6,7 @@ import (
 
 func TestFixFunc(t *testing.T) {
 	tpl := `{{index "index" "d"}}`
-	out, err := Fix(tpl, "index", "strings.Index")
+	out, err := Fix("tpl", tpl, "index", "strings.Index")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -18,7 +18,7 @@ func TestFixFunc(t *testing.T) {
 
 func TestFixPath(t *testing.T) {
 	tpl := `{{.Foo.Bar ".Foo.Bar"}}`
-	out, err := Fix(tpl, ".Foo.Bar", ".Foo.Baz")
+	out, err := Fix("tpl", tpl, ".Foo.Bar", ".Foo.Baz")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func TestFixPath(t *testing.T) {
 
 func TestFormat(t *testing.T) {
 	tpl := `{{  index   "index"   "d"  }}`
-	out, err := Format(tpl)
+	out, err := Format("tpl", tpl)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func TestFormat(t *testing.T) {
 
 func TestFixFuncWithPath(t *testing.T) {
 	tpl := `Hi!  {{  Foo  .Index.Foo  "Foo"  }}33`
-	out, err := Fix(tpl, "Foo", "Bar")
+	out, err := Fix("tpl", tpl, "Foo", "Bar")
 	if err != nil {
 		t.Fatal(err)
 	}

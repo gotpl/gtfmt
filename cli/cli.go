@@ -116,7 +116,7 @@ func (c *Command) format() error {
 		}
 		orig := string(b)
 		if c.List {
-			ok, err := gtfmt.Formatted(orig)
+			ok, err := gtfmt.Formatted(fn, orig)
 			if err != nil {
 				return err
 			}
@@ -125,7 +125,7 @@ func (c *Command) format() error {
 			}
 			continue
 		}
-		s, err := gtfmt.Format(orig)
+		s, err := gtfmt.Format(fn, orig)
 		if err != nil {
 			return err
 		}
@@ -150,7 +150,7 @@ func (c *Command) fmtStdin() error {
 	}
 	orig := string(b)
 	if c.List {
-		ok, err := gtfmt.Formatted(orig)
+		ok, err := gtfmt.Formatted("stdin", orig)
 		if err != nil {
 			return err
 		}
@@ -161,7 +161,7 @@ func (c *Command) fmtStdin() error {
 		}
 		return nil
 	}
-	s, err := gtfmt.Format(orig)
+	s, err := gtfmt.Format("stdin", orig)
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func (c *Command) replace() error {
 			return err
 		}
 		tpl := string(b)
-		s, err := gtfmt.Fix(tpl, c.Orig, c.Replace)
+		s, err := gtfmt.Fix(fn, tpl, c.Orig, c.Replace)
 		if err != nil {
 			return err
 		}
@@ -209,7 +209,7 @@ func (c *Command) replaceStdin() error {
 		return err
 	}
 	tpl := string(b)
-	s, err := gtfmt.Fix(tpl, c.Orig, c.Replace)
+	s, err := gtfmt.Fix("stdin", tpl, c.Orig, c.Replace)
 	if err != nil {
 		return err
 	}
