@@ -12,7 +12,7 @@ Rewriting with -r is still experimental and should be used with extreme caution,
 as it may have unintended consequences.
 
 ## Examples
-
+```
 $ echo 'Hi!  {{  foo  .Index.Bar  "byte"  }}33' | gtfmt
 Hi!  {{foo .Index.Bar "byte"}}33
 
@@ -23,7 +23,7 @@ Hi!  {{Baz .Index.Foo "Foo"}}33
 // replace a field's path
 $ echo 'Hi!  {{  Foo  .Index.Foo  "Foo"  }}33' | gtfmt -r '.Index.Foo -> .Index.Baz.Foo'
 Hi!  {{Baz .Index.Baz.Foo "Foo"}}33
-
+```
 
 ## Usage
 
