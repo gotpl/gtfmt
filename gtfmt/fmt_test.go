@@ -64,7 +64,7 @@ func TestNoParseSubTemplate(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected subtemplate to trigger error")
 	}
-	if err.Error() != "sub templates not currently supported" {
+	if err.Error() != "tpl: sub templates not currently supported" {
 		t.Fatalf("wrong error message from subtemplate: %v", err)
 	}
 }
