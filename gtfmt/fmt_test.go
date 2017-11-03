@@ -1,6 +1,8 @@
-package fix
+package gtfmt
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFixFunc(t *testing.T) {
 	tpl := `{{index "index" "d"}}`
@@ -21,6 +23,18 @@ func TestFixPath(t *testing.T) {
 		t.Fatal(err)
 	}
 	expected := `{{.Foo.Baz ".Foo.Bar"}}`
+	if out != expected {
+		t.Fatalf("expected:\n%q\n\nbut got:\n%q", expected, out)
+	}
+}
+
+func TestFormat(t *testing.T) {
+	tpl := `{{  index   "index"   "d"  }}`
+	out, err := Format(tpl)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := `{{index "index" "d"}}`
 	if out != expected {
 		t.Fatalf("expected:\n%q\n\nbut got:\n%q", expected, out)
 	}

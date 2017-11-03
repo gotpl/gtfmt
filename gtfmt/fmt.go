@@ -1,16 +1,36 @@
-package fix
+package gtfmt
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/gotpl/gtfix/internal/parse"
+	"github.com/gotpl/gtfmt/internal/parse"
 )
 
-// Fix replaces orig with repl in tpl.  tpl must be a valid go template.  Orig
-// must be a valid template function name or . path (e.g. .Foo.Bar).  Paths *must* start with a ".".
+// Formatted reports whether the text in the given template is correctly formatted.
+func Formatted(s string) (bool, error) {
+	tree, err := parse.ParseNoFuncs("gtfmt", s, "", "")
+	if err != nil {
+		return false, err
+	}
+	return s == tree["gtfmt"].Root.String(), nil
+}
+
+// Format formats the code inside your template statements without changing any
+// other surrounding text.
+func Format(s string) (string, error) {
+	tree, err := parse.ParseNoFuncs("gtfmt", s, "", "")
+	if err != nil {
+		return "", err
+	}
+	return tree["gtfmt"].Root.String(), nil
+}
+
+// Fix replaces orig with repl in tpl. tpl must be a valid go template.  Orig
+// must be a valid template function name or . path (e.g. .Foo.Bar).  Paths
+// *must* start with a ".".
 func Fix(tpl string, orig, repl string) (string, error) {
-	tree, err := parse.ParseNoFuncs("", tpl, "", "")
+	tree, err := parse.ParseNoFuncs("gtfmt", tpl, "", "")
 	if err != nil {
 		return "", err
 	}
@@ -31,17 +51,8 @@ func Fix(tpl string, orig, repl string) (string, error) {
 		s.fn = orig
 		s.repl = repl
 	}
-	for k, v := range tree {
-		if k != "" {
-			fmt.Printf("parsing tree %q\n", k)
-		}
-		s.walk(v.Root)
-	}
-	vals := make([]string, 0, len(tree))
-	for _, v := range tree {
-		vals = append(vals, v.Root.String())
-	}
-	return strings.Join(vals, ""), nil
+	s.walk(tree["gtfmt"].Root)
+	return tree["gtfmt"].Root.String(), nil
 }
 
 type state struct {
