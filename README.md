@@ -1,4 +1,4 @@
-# gtfmt
+# gtfmt [![Build Status](https://travis-ci.org/gotpl/gtfmt.svg?branch=master)](https://travis-ci.org/gotpl/gtfmt)
 
 Like go fmt but for go templates.
 
