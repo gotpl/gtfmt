@@ -3,15 +3,12 @@
 
 Like go fmt but for go templates.
 
-Note that "reformatting" only changes the code inside template actions, it will
-never change the text outside the template actions.
-
-Reformatting should be considered safe and will not change your template's
-output at all.
+Due to several problems found in round-tripping templates through the stdlib
+parser and lexer, use of this command should be considered experimental.  See
+the bugs section below.
 
 Rewriting with -r is still experimental and should be used with extreme caution,
 as it may have unintended consequences.
-
 
 ## Bugs 
 
@@ -23,6 +20,7 @@ remove a dash if you don't like the effect of the whitespace deletion.
 sub-templates (i.e. `{{define "foo"}`}) are currently not supported
 (gtfmt will refuse to run on templates that use subtemplates).
 
+Template comments are stripped when formatting.
 
 ## Examples
 ```
